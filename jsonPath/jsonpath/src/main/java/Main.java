@@ -17,28 +17,32 @@ public class Main {
     public static void main(String[] args) {
         RestAssured.baseURI = URL;
         RequestSpecification requestSpecification = RestAssured.given();
-        Response response = requestSpecification.get("entries");
+        Response responseEntries = requestSpecification.get("entries");
+        Response responseCategories = requestSpecification.get("categories");
 
-        JsonPath jsonPath = response.jsonPath();
+        JsonPath jsonPathEntries = responseEntries.jsonPath();
+        JsonPath jsonPathCategories = responseCategories.jsonPath();
 
         //get String
-        String category = jsonPath.getString("entries[0].Category");
-        System.out.println(category);
+        String category = jsonPathEntries.getString("entries[0].Category");
+        System.out.println("Get String: " + category);
 
         //get List
-        List<String> categories = Collections.singletonList(jsonPath.getString("entries.Category"));
-        System.out.println(categories);
+        List<String> categories = jsonPathCategories.getList("categories");
+        System.out.println("Get List: " + categories);
 
         //getBoolean
-        Boolean aBoolean = jsonPath.getBoolean("entries[1].HTTPS");
-        System.out.println(aBoolean);
+        Boolean aBoolean = jsonPathEntries.getBoolean("entries[1].HTTPS");
+        System.out.println("Get boolean: " + aBoolean);
 
         //get JsonObject
-        Object jsonObject = jsonPath.getJsonObject("entries[0]");
-        System.out.println(jsonObject.toString());
+        Object jsonObject = jsonPathEntries.getJsonObject("entries[0]");
+        System.out.println("Get Object: " + jsonObject.toString());
 
         //get Map
-        Map<Object, Object> map = jsonPath.getMap("entries[0]");
+        System.out.println("Get Map:");
+        Map<Object, Object> map = jsonPathEntries.getMap("entries[0]");
+
         for (Map.Entry<Object, Object> objectObjectEntry : map.entrySet()) {
             System.out.println(objectObjectEntry.toString());
         }
